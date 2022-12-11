@@ -1,0 +1,72 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message Route {
+  option (google.api.resource) = {
+    pattern: "routes/{route_id}"
+  };
+
+  string id = 1;
+  int32 position = 2;
+  repeated Waypoint waypoints = 3;
+  string imageURL = 4;
+  string mainLocale = 5;
+  map<string, string> names = 6;
+  map<string, string> descriptions = 7;
+}
+
+message Waypoint {
+  string id = 1;
+  int32 position = 2;
+  string poiId = 3;
+  int64 stayForSeconds = 4;
+}
+
+/*********************
+* GetRoutes Messages *
+*********************/
+
+message GetRoutesResponse {
+  repeated Route routes = 1;
+}
+
+/********************
+* GetRoute Messages *
+********************/
+
+message GetRouteRequest {
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "Route"
+  ];
+}
+
+/*****************
+* Routes Service *
+*****************/
+
+service RoutesService {
+  // This endpoint gets all routes
+  rpc GetRoutes(google.protobuf.Empty) returns (GetRoutesResponse) {
+    option (google.api.http) = {
+      get: "/v2/routes"
+    };
+  }
+  // This endpoint gets a specific route
+  rpc GetRoute(GetRouteRequest) returns (Route) {
+    option (google.api.http) = {
+      get: "/v2/{name=routes/*}"
+    };
+  }
+}

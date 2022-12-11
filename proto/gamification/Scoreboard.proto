@@ -1,0 +1,41 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract.gamification;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract.gamification/v2";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message ScoreboardProfile {
+  string username = 1;
+  int32 position = 2;
+  int32 score = 3;
+  repeated string ownedBadges = 4;
+}
+
+/*************************
+* GetScoreboard Messages *
+*************************/
+
+message GetScoreboardResponse {
+  repeated ScoreboardProfile allTime = 1;
+  repeated ScoreboardProfile seasonal = 2;
+  repeated ScoreboardProfile weekly = 3;
+}
+
+/*********************
+* Scoreboard Service *
+*********************/
+
+service ScoreboardService {
+  // This endpoint fetches the All-Time & Seasonal & Weekly scoreboard
+  rpc GetScoreboard(google.protobuf.Empty) returns (GetScoreboardResponse) {
+    option (google.api.http) = {
+      get: "/v2/scoreboard"
+    };
+  }
+}

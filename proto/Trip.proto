@@ -1,0 +1,97 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "Evidence.proto";
+
+/**************
+* Definitions *
+**************/
+
+message Trip {
+  option (google.api.resource) = {
+    pattern: "trip/{trip_id}"
+  };
+
+  string id = 1;
+  string routeId = 2;
+  bool completed = 3;
+  repeated Visit visits = 4;
+}
+
+message Visit {
+  string id = 1;
+  string poiId = 2;
+  google.protobuf.Timestamp entryTime = 3;
+  google.protobuf.Timestamp leaveTime = 4;
+  repeated VisitEvidence visitEvidences = 5;
+}
+
+enum VisitVerificationStatus {
+  OK = 0;
+  SHORT_DURATION = 1;
+  NOT_ENOUGH_CONFIDENCE = 2;
+}
+
+/********************
+* GetTrips Messages *
+********************/
+
+message GetTripsResponse {
+  repeated Trip trips = 1;
+}
+
+/**********************
+* CreateTrip Messages *
+**********************/
+
+message CreateOrUpdateTripResponse {
+  bool completedTrip = 1;
+  map<string, VisitVerificationStatus> visitVerificationStatus = 2;
+  int32 awardedScore = 3;
+  int32 awardedGems = 4;
+  repeated string awardedBadges = 5;
+}
+
+/*******************
+* GetTrip Messages *
+*******************/
+
+message GetTripRequest {
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "Trip"
+  ];
+}
+
+/****************
+* Trips Service *
+****************/
+
+service TripsService {
+  // This endpoint gets all trips of a given user
+  rpc GetTrips(google.protobuf.Empty) returns (GetTripsResponse) {
+    option (google.api.http) = {
+      get: "/v2/trip"
+    };
+  }
+  // This endpoint gets a specific trip
+  rpc GetTrip(GetTripRequest) returns (Trip) {
+    option (google.api.http) = {
+      get: "/v2/{name=trip/*}"
+    };
+  }
+  // This endpoint creates a new trip or updates it if it already exists
+  rpc CreateOrUpdate(Trip) returns (CreateOrUpdateTripResponse) {
+    option (google.api.http) = {
+      post: "/v2/trip"
+      body: "*"
+    };
+  }
+}

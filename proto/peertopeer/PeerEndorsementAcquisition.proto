@@ -1,0 +1,78 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.peertopeer;
+
+option go_package = "pt.ulisboa.tecnico.cross.peertopeer/v2";
+
+import "google/protobuf/timestamp.proto";
+
+/********
+* Claim *
+********/
+
+message SignedClaim {
+  Claim claim = 1;
+  bytes proverSignature = 2;
+}
+
+message Claim {
+  string proverId = 1;
+  string proverSessionId = 2;
+  string poiId = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  bytes vA = 5;
+  bytes vB = 6;
+}
+
+/**********
+* Prepare *
+**********/
+
+message Prepare {
+  bytes vH = 1;
+}
+
+/********
+* Ready *
+********/
+
+message Ready {}
+
+/************
+* Challenge *
+************/
+
+message Challenge {
+  bool vCi = 1;
+}
+
+/********************
+* ChallengeResponse *
+********************/
+
+message ChallengeResponse {
+  bool vRi = 1;
+}
+
+/**************
+* Endorsement *
+**************/
+
+message PeerEndorsement {
+  SignedClaim signedClaim = 1;
+  bytes encryptedSignedEndorsement = 2;
+}
+
+message SignedEndorsement {
+  Endorsement endorsement = 1;
+  bytes witnessSignature = 2;
+}
+
+message Endorsement {
+  string witnessId = 1;
+  string witnessSessionId = 2;
+  string poiId = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  bytes vH = 5;
+  bytes vC = 6;
+  bytes vR = 7;
+}

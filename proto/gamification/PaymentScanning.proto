@@ -1,0 +1,29 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract.gamification;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract.gamification/v2";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message Transaction  {
+  bytes encryptedJwt = 1;
+  int32 gems = 2;
+}
+
+/******************
+* Payment Service *
+******************/
+
+service PaymentService {
+  // This endpoint deducts user gems as a point of interest entry payment method
+  rpc Payment(Transaction) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/v2/payment"
+    };
+  }
+}

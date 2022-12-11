@@ -1,0 +1,28 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+/*****************************
+* GetDatasetVersion Messages *
+*****************************/
+
+message GetLatestDatasetResponse {
+  string version = 1;
+}
+
+/******************
+* Dataset Service *
+******************/
+
+service DatasetService {
+  // This endpoint gets the latest version of the dataset
+  rpc GetLatestDataset(google.protobuf.Empty) returns (GetLatestDatasetResponse) {
+    option (google.api.http) = {
+      get: "/v2/dataset"
+    };
+  }
+}

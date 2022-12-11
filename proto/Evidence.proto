@@ -1,0 +1,28 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "peertopeer/PeerEndorsementAcquisition.proto";
+
+/**************
+* Definitions *
+**************/
+
+// CROSS-Specific Evidence Schemas
+message VisitEvidences {
+  repeated VisitEvidence evidences = 1;
+}
+
+message VisitEvidence {
+  oneof evidence {
+    WiFiAPEvidence wiFiAPEvidence = 1;
+    peertopeer.PeerEndorsement peerEndorsement = 2;
+  }
+}
+
+message WiFiAPEvidence {
+  string bssid = 1;
+  string ssid = 2;
+  int64 sightingMillis = 3;
+}

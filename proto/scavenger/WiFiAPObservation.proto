@@ -1,0 +1,17 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.scavenger;
+
+option go_package = "pt.ulisboa.tecnico.cross.scavenger/v2";
+
+message WiFiAPObservation {
+  string traveler = 1;
+  string poiId = 2;
+  string bssid = 3;
+  int64 sightingMillis = 4;
+}
+
+message WiFiAPObservationList {
+  repeated WiFiAPObservation observations = 1;
+  string traveler = 2;
+  string poiId = 3;
+}

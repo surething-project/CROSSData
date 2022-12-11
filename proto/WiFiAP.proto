@@ -1,0 +1,61 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message WiFiAP {
+  option (google.api.resource) = {
+    pattern: "wifiap/{bssid}"
+  };
+
+  string bssid = 1;
+  string type = 2;
+}
+
+/**********************
+* GetWiFiAPs Messages *
+**********************/
+
+message GetWiFiAPsResponse {
+  repeated WiFiAP wiFiAPs = 1;
+}
+
+
+/*********************
+* GetWiFiAP Messages *
+*********************/
+
+message GetWiFiAPRequest {
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "WiFiAP"
+  ];
+}
+
+/******************
+* WiFi AP Service *
+******************/
+
+service WiFiAPService {
+  // The endpoint gets all WiFi access points
+  rpc GetWiFiAPs(google.protobuf.Empty) returns (GetWiFiAPsResponse) {
+    option (google.api.http) = {
+      get: "/v2/wifiap"
+    };
+  }
+  // This endpoint gets a specific WiFi access point
+  rpc GetWiFiAP(GetWiFiAPRequest) returns (WiFiAP) {
+    option (google.api.http) = {
+      get: "/v2/{name=wifiap/*}"
+    };
+  }
+}

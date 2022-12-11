@@ -1,0 +1,65 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message POI {
+  option (google.api.resource) = {
+    pattern: "poi/{id}"
+  };
+
+  string id = 1;
+  repeated double worldCoord = 2;
+  string webURL = 3;
+  string imageURL = 4;
+  string mainLocale = 5;
+  map<string, string> names = 6;
+  map<string, string> descriptions = 7;
+}
+
+/*******************
+* GetPOIs Messages *
+*******************/
+
+message GetPOIsResponse {
+  repeated POI POIs = 2;
+}
+
+/******************
+* GetPOI Messages *
+******************/
+
+message GetPOIRequest {
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "POI"
+  ];
+}
+
+/**************
+* POI Service *
+**************/
+
+service POIService {
+  // This endpoint gets the Points of interest
+  rpc GetPOIs(google.protobuf.Empty) returns (GetPOIsResponse) {
+    option (google.api.http) = {
+      get: "/v2/poi"
+    };
+  }
+  // This endpoint gets a specific Point of Interest
+  rpc GetPOI(GetPOIRequest) returns (POI) {
+    option (google.api.http) = {
+      get: "/v2/{name=poi/*}"
+    };
+  }
+}

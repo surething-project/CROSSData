@@ -1,0 +1,61 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract/v2";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message Credentials {
+  string username = 1;
+  string password = 2;
+  CryptoIdentity cryptoIdentity = 3;
+}
+
+message CryptoIdentity {
+  string sessionId = 1;
+  bytes publicKey = 2;
+}
+
+message Welcome {
+  string jwt = 1;
+  bytes serverCertificate = 2;
+  int32 gems = 3;
+  repeated string ownedBadges = 4;
+}
+
+message Token {
+  string registrationToken = 1;
+}
+
+/***************
+* User Service *
+***************/
+
+service UserService {
+  // This endpoint registers a user
+  rpc SignUp(Credentials) returns (Welcome) {
+    option (google.api.http) = {
+      post: "/v2/user/signup"
+      body: "*"
+    };
+  }
+  // This endpoint logs a user in
+  rpc SignIn(Credentials) returns (Welcome) {
+    option (google.api.http) = {
+      post: "/v2/user/signin"
+      body: "*"
+    };
+  }
+  // This endpoint registers a Firebase messaging token so the server can send notifications
+  rpc RegisterToken(Token) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v2/user/register_token"
+      body: "*"
+    };
+  }
+}

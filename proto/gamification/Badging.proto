@@ -1,0 +1,42 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.cross.contract.gamification;
+
+option go_package = "pt.ulisboa.tecnico.cross.contract.gamification/v2";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+/**************
+* Definitions *
+**************/
+
+message Badge {
+  string id = 1;
+  int32 position = 2;
+  string imageURL = 3;
+  string mainLocale = 4;
+  map<string, string> names = 5;
+  map<string, string> quests = 6;
+  map<string, string> achievements = 7;
+}
+
+/*********************
+* GetBadges Messages *
+*********************/
+
+message GetBadgesResponse {
+  repeated Badge badges = 1;
+}
+
+/******************
+* Badging Service *
+******************/
+
+service BadgingService {
+  // This endpoint fetches all badges
+  rpc GetBadges(google.protobuf.Empty) returns (GetBadgesResponse) {
+    option (google.api.http) = {
+      get: "/v2/badging"
+    };
+  }
+}
